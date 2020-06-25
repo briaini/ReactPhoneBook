@@ -1,9 +1,6 @@
 import React from 'react'
 
-
-
-const Search = () => {
-    const [searchValue, setSearchValue] = useState('')
+const Searcher = ({searchValue, setSearchValue}) => {
 
     const handleSearch = (event) => {
         console.log(`searching... ${event.target.value}`)
@@ -20,4 +17,4 @@ const Search = () => {
     )
 }
 
-export default Search
+export default Searcher
