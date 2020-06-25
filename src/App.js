@@ -5,6 +5,8 @@ import contactService from './services/contacts'
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [searchValue, setSearchValue] = useState('')
 
   useEffect(() => {
     contactService
@@ -14,36 +16,64 @@ const App = () => {
       })
   }, [])
 
-  const handleInputChange = (event) => {
+  const handleNameChange = (event) => {
     console.log(event.target.value)
     setNewName(event.target.value)
   }
 
-  const addContact = (event) => {
-    event.preventDefault()
-    const contactObject = {
-      name: newName,
-      number: "000"
-    }
-
-    contactService.
-      create(contactObject)
-      .then(returnedContact => {
-        setPersons(persons.concat(returnedContact))
-        setNewName('')
-      })
+  const handleNumberChange = (event) => {
+    console.log(event.target.value)
+    setNewNumber(event.target.value)
   }
 
+  const handleSearch = (event) => {
+    console.log(`searching... ${event.target.value}`)
+    setSearchValue(event.target.value)
+  }
 
+  const addContact = (event) => {
+    event.preventDefault()
+
+    const exists = persons.some((person) => person.name === newName)
+
+    const contactObject = {
+      name: newName,
+      number: newNumber
+    }
+
+    exists ? window.alert(`The name ${newName} already exists`) :
+      contactService.
+        create(contactObject)
+        .then(returnedContact => {
+          setPersons(persons.concat(returnedContact))
+          setNewName('')
+          setNewNumber('')
+        })
+  }
+
+  const personsList = persons.filter(person => person.name.toUpperCase() === searchValue.toUpperCase())
+  
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>debug: {newName}</div>
+      <div>
+        search: <input
+          value={searchValue}
+          onChange={handleSearch}
+        />
+      </div>
+      <h3>add a new contact</h3>
       <form onSubmit={addContact}>
         <div>
           name: <input
             value={newName}
-            onChange={handleInputChange}
+            onChange={handleNameChange}
+          />
+        </div>
+        <div>
+          number: <input
+            value={newNumber}
+            onChange={handleNumberChange}
           />
         </div>
         <div>
@@ -51,8 +81,8 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      {persons.map((person, i) =>
-        <Contact key={i} name={person.name} number={person.number} />
+      {personsList.map((person) =>
+        <Contact key={person.name} name={person.name} number={person.number} />
       )}
     </div>
   )
