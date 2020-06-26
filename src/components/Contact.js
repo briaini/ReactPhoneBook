@@ -1,11 +1,12 @@
 import React from 'react'
 
-const Contact = ({name, number}) => {
+const Contact = ({name, number, handleDelete}) => {
     // const label = name
 
     return (
-        <li>
+        <li className='contactItem'>
             {name +"    "+ number}
+            <button onClick={handleDelete}>Delete</button>
         </li>
     )
 }

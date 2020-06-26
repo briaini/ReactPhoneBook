@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import contactService from '../services/contacts'
 
 
 const ContactForm = ({ persons, setPersons }) => {
-
 
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
@@ -32,9 +31,11 @@ const ContactForm = ({ persons, setPersons }) => {
             contactService.
                 create(contactObject)
                 .then(returnedContact => {
+                    console.log(`new ${returnedContact.id}`)
                     setPersons(persons.concat(returnedContact))
                     setNewName('')
                     setNewNumber('')
+                    console.log(persons)
                 })
     }
 

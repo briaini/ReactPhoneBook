@@ -16,7 +16,14 @@ const App = () => {
       })
   }, [])
 
-  const personsList = persons.filter(person => person.name.toUpperCase() === searchValue.toUpperCase())
+  const handleDelete = (id) => {
+    contactService.del(id)
+      .then(
+        setPersons(persons.filter(n => n.id !== id))
+      )
+  }
+
+  const personsList = searchValue.length === 0 ? persons : persons.filter(person => person.name.toUpperCase().includes(searchValue.toUpperCase()))
 
   return (
     <div>
@@ -36,7 +43,11 @@ const App = () => {
 
       <RenderedContacts
         personsList={personsList}
+        handleDelete={handleDelete}
       />
+      <div>
+        debug: {persons.map(person => person.id)}
+      </div>
     </div>
   )
 }
