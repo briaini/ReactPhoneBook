@@ -20,14 +20,27 @@ const ContactForm = ({ persons, setPersons }) => {
     const addContact = (event) => {
         event.preventDefault()
 
-        const exists = persons.some((person) => person.name === newName)
+        const existsIndex = persons.findIndex((person) => person.name === newName)
 
         const contactObject = {
             name: newName,
             number: newNumber
         }
 
-        exists ? window.alert(`The name ${newName} already exists`) :
+        if (existsIndex !== -1) {
+            if (persons[existsIndex].number === newNumber) {
+                window.alert(`The name ${newName} already exists with identical number.`)
+            } else {
+                const newPerson = { ...persons[existsIndex], number: newNumber }
+                if (window.confirm(`Would you like to change ${newName}'s number to ${newNumber}?`)) {
+                    contactService
+                        .update(newPerson.id, newPerson)
+                        .then(setPersons(persons.filter(person=>person.id !== newPerson.id).concat(newPerson)))
+
+                }
+
+            }
+        } else {
             contactService.
                 create(contactObject)
                 .then(returnedContact => {
@@ -37,6 +50,19 @@ const ContactForm = ({ persons, setPersons }) => {
                     setNewNumber('')
                     console.log(persons)
                 })
+        }
+        // const exists = persons.some((person) => person.name === newName)
+
+        // exists ? window.alert(`The name ${newName} already exists`) :
+        //     contactService.
+        //         create(contactObject)
+        //         .then(returnedContact => {
+        //             console.log(`new ${returnedContact.id}`)
+        //             setPersons(persons.concat(returnedContact))
+        //             setNewName('')
+        //             setNewNumber('')
+        //             console.log(persons)
+        //         })
     }
 
     return (
